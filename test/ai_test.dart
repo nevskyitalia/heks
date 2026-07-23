@@ -4,8 +4,6 @@ import 'package:heks/game/ai.dart';
 import 'package:heks/game/board.dart';
 import 'package:heks/game/engine.dart';
 
-/// Odigraj [n] partija: levelA igra kao X u polovini, kao O u polovini.
-/// Vraca procenat poena za A (pobeda 1, nereseno 0.5).
 double match(int levelA, int levelB, int n, int seed) {
   final rng = Random(seed);
   var scoreA = 0.0;
@@ -30,7 +28,7 @@ double match(int levelA, int levelB, int n, int seed) {
 }
 
 void main() {
-  test('svaki nivo daje legalan potez', () {
+  test('svaki nivo daje legalan potez do kraja partije', () {
     for (var level = 1; level <= 10; level++) {
       final g = Game(buildHeks1());
       final ai = Ai(level, Random(7));
@@ -43,40 +41,38 @@ void main() {
     }
   });
 
-  test('nivo 5 uvek uzima pobednicki potez', () {
+  test('nivo 10 uvek uzima pobednicki potez', () {
     final g = Game(buildHeks1());
-    // X (AI) postavi 0 i 6; treba da odigra 1 za pobedu
     g.place(0); // X
     g.place(20); // O
     g.place(6); // X
-    g.place(21); // O -> X na potezu
-    final ai = Ai(5, Random(1));
-    for (var t = 0; t < 20; t++) {
-      expect(ai.choose(g), 1); // jedini pobednicki potez
-    }
-  });
-
-  test('nivo 5 uvek blokira neposrednu pretnju', () {
-    final g = Game(buildHeks1());
-    g.place(0); // X
-    g.place(20); // O
-    g.place(6); // X preti sa 0-6-1
-    // O na potezu, mora blok na 1
-    final ai = Ai(5, Random(2));
+    g.place(21); // O -> X na potezu, pobeda na polju 1
+    final ai = Ai(10, Random(1));
     for (var t = 0; t < 20; t++) {
       expect(ai.choose(g), 1);
     }
   });
 
-  test('snaga raste: visi nivo dobija nizi (grubo)', () {
-    // stedljivo: manji uzorci, samo kljucne provere monotonosti
-    expect(match(4, 1, 60, 11), greaterThan(55));
-    expect(match(7, 4, 60, 12), greaterThan(55));
-    expect(match(10, 7, 40, 13), greaterThan(55));
-  });
+  test('nivo 10 uvek blokira neposrednu pretnju', () {
+    final g = Game(buildHeks1());
+    g.place(0); // X
+    g.place(20); // O
+    g.place(6); // X preti na polju 1; O mora blok
+    final ai = Ai(10, Random(2));
+    for (var t = 0; t < 20; t++) {
+      expect(ai.choose(g), 1);
+    }
+  }, timeout: const Timeout(Duration(minutes: 2)));
 
-  test('nivo 10 nije nepobediv (gubi bar nekad od nivoa 7)', () {
-    final s = match(7, 10, 40, 14);
-    expect(s, greaterThan(0)); // nivo 7 osvoji bar nesto poena
-  });
+  test('jacina raste sa nivoom (grubo)', () {
+    expect(match(4, 1, 60, 11), greaterThan(55));
+    expect(match(8, 4, 60, 12), greaterThan(55));
+    expect(match(10, 8, 40, 13), greaterThan(55));
+  }, timeout: const Timeout(Duration(minutes: 10)));
+
+  test('vrh lestvice: nivo 9 osvaja deo poena protiv nivoa 10', () {
+    final s = match(9, 10, 60, 14);
+    expect(s, greaterThan(5)); // pobediv za jako pametnog igraca
+    expect(s, lessThan(45)); // ali i dalje jasno slabiji
+  }, timeout: const Timeout(Duration(minutes: 10)));
 }

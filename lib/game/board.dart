@@ -27,12 +27,12 @@ class BoardDef {
 const double _deg = pi / 180.0;
 final double _ap = cos(30 * _deg); // apotema faktor
 
-/// HEKS1: tri sestougla (1 : 0.75 : 0.5), izduzena 1.3 x 0.7,
+/// HEKS1: tri sestougla (1 : 0.7 : 0.4), izduzena 1.56 x 0.7,
 /// 36 polja (temena + sredine stranica), 24 linije:
 /// 18 stranica (teme-sredina-teme) + 6 radijalnih kroz temena.
 BoardDef buildHeks1() {
-  const sx = 1.3, sy = 0.7;
-  const scales = [1.0, 0.75, 0.5];
+  const sx = 1.56, sy = 0.7;
+  const scales = [1.0, 0.7, 0.4];
   final cells = <Point<double>>[];
   // raspored: za h u 0..2 -> 6 temena (V), pa 6 sredina (M)
   for (var h = 0; h < 3; h++) {
@@ -57,7 +57,7 @@ BoardDef buildHeks1() {
   for (var k = 0; k < 6; k++) {
     lines.add([v(0, k), v(1, k), v(2, k)]); // radijalna kroz temena
   }
-  return BoardDef(id: 'heks1', cells: cells, lines: lines, cellR: 0.055);
+  return BoardDef(id: 'heks1', cells: cells, lines: lines, cellR: 0.0715);
 }
 
 /// HEKS2: dva sestougla (1 : 0.6) + centar, 25 polja, 24 linije:
@@ -91,7 +91,7 @@ BoardDef buildHeks2() {
     lines.add([v(0, k), v(1, k), center]); // radijus kroz temena
     lines.add([m(0, k), m(1, k), center]); // radijus kroz sredine
   }
-  return BoardDef(id: 'heks2', cells: cells, lines: lines, cellR: 0.075);
+  return BoardDef(id: 'heks2', cells: cells, lines: lines, cellR: 0.0975);
 }
 
 final List<BoardDef> allBoards = [buildHeks1(), buildHeks2()];

@@ -12,13 +12,21 @@ class Prefs {
 
   static void _bump() => rev.value++;
 
-  static String get lang => _p.getString('lang') ?? 'sr';
+  static String get lang => _p.getString('lang') ?? 'en';
   static set lang(String v) {
     _p.setString('lang', v);
     _bump();
   }
 
-  /// false = landscape (default pri prvom pokretanju), true = portrait.
+  /// Da li je korisnik vec prosao prvi izbor jezika (pojavljuje se jednom).
+  static bool get langChosen => _p.getBool('langChosen') ?? false;
+  static set langChosen(bool v) {
+    _p.setBool('langChosen', v);
+    _bump();
+  }
+
+  /// false = landscape (default za IGRU), true = portrait za igru.
+  /// Meniji i podesavanja su uvek portrait.
   static bool get portrait => _p.getBool('portrait') ?? false;
   static set portrait(bool v) {
     _p.setBool('portrait', v);
@@ -31,7 +39,7 @@ class Prefs {
     _bump();
   }
 
-  static int get aiLevel => _p.getInt('aiLevel') ?? 3;
+  static int get aiLevel => _p.getInt('aiLevel') ?? 4;
   static set aiLevel(int v) {
     _p.setInt('aiLevel', v);
     _bump();

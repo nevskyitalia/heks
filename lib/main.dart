@@ -3,7 +3,17 @@ import 'package:flutter/services.dart';
 import 'prefs.dart';
 import 'ui/menu_screen.dart';
 
-Future<void> applyOrientation() async {
+/// Meniji i podesavanja su uvek uspravno (portrait).
+Future<void> setMenuOrientation() async {
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+}
+
+/// Ekran igre: polozeno po defaultu, ili uspravno ako je korisnik
+/// tako izabrao u podesavanjima (izbor se trajno pamti).
+Future<void> setGameOrientation() async {
   if (Prefs.portrait) {
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -20,7 +30,7 @@ Future<void> applyOrientation() async {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Prefs.init();
-  await applyOrientation(); // landscape pri prvom pokretanju, pamti izbor
+  await setMenuOrientation();
   runApp(const HeksApp());
 }
 

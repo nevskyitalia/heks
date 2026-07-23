@@ -27,6 +27,9 @@ class _MenuScreenState extends State<MenuScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Prvi ulazak u aplikaciju: samo izbor jezika (jednom, nikad vise).
+    if (!Prefs.langChosen) return _languagePicker();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -45,120 +48,104 @@ class _MenuScreenState extends State<MenuScreen> {
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 480),
+              constraints: const BoxConstraints(maxWidth: 420),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(tr('subtitle'),
                       textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 15, color: Colors.black54)),
-                  const SizedBox(height: 18),
-                  // izbor mreze
+                      style:
+                          const TextStyle(fontSize: 15, color: Colors.black54)),
+                  const SizedBox(height: 28),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('${tr('board')}: ',
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                      Text('${tr('playAs')}: ',
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
                       const SizedBox(width: 8),
-                      Expanded(
-                        child: SegmentedButton<String>(
-                          segments: [
-                            for (final b in allBoards)
-                              ButtonSegment(
-                                  value: b.id, label: Text(tr('board_${b.id}'))),
-                          ],
-                          selected: {Prefs.boardId},
-                          onSelectionChanged: (s) =>
-                              setState(() => Prefs.boardId = s.first),
-                        ),
+                      SegmentedButton<int>(
+                        segments: const [
+                          ButtonSegment(value: 1, label: Text('X')),
+                          ButtonSegment(value: 2, label: Text('O')),
+                        ],
+                        selected: {Prefs.humanSide},
+                        onSelectionChanged: (s) =>
+                            setState(() => Prefs.humanSide = s.first),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 28),
                   FilledButton(
                     style: FilledButton.styleFrom(
                       backgroundColor: kInk,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                     onPressed: () => _startGame(false),
                     child: Text(tr('twoPlayers'),
                         style: const TextStyle(fontSize: 18)),
                   ),
-                  const SizedBox(height: 24),
-                  Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black26),
-                      borderRadius: BorderRadius.circular(12),
+                  const SizedBox(height: 16),
+                  FilledButton(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: kXColor,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        // izbor znaka
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('${tr('playAs')}: ',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold)),
-                            const SizedBox(width: 8),
-                            SegmentedButton<int>(
-                              segments: const [
-                                ButtonSegment(value: 1, label: Text('X')),
-                                ButtonSegment(value: 2, label: Text('O')),
-                              ],
-                              selected: {Prefs.humanSide},
-                              onSelectionChanged: (s) =>
-                                  setState(() => Prefs.humanSide = s.first),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        // nivo 1-10
-                        Row(
-                          children: [
-                            Text('${tr('level')}: ${Prefs.aiLevel}',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold)),
-                          ],
-                        ),
-                        Slider(
-                          value: Prefs.aiLevel.toDouble(),
-                          min: 1,
-                          max: 10,
-                          divisions: 9,
-                          label: '${Prefs.aiLevel}',
-                          onChanged: (v) =>
-                              setState(() => Prefs.aiLevel = v.round()),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('1 = ${tr('levelHint1')}',
-                                style: const TextStyle(
-                                    fontSize: 12, color: Colors.black54)),
-                            Text('10 = ${tr('levelHint10')}',
-                                style: const TextStyle(
-                                    fontSize: 12, color: Colors.black54)),
-                          ],
-                        ),
-                        const SizedBox(height: 6),
-                        FilledButton(
-                          style: FilledButton.styleFrom(
-                            backgroundColor: kXColor,
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                          ),
-                          onPressed: () => _startGame(true),
-                          child: Text(tr('vsPhone'),
-                              style: const TextStyle(fontSize: 18)),
-                        ),
-                      ],
-                    ),
+                    onPressed: () => _startGame(true),
+                    child: Text(tr('vsPhone'),
+                        style: const TextStyle(fontSize: 18)),
                   ),
                 ],
               ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _languagePicker() {
+    return Scaffold(
+      body: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 340),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text('HEKS',
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 8),
+                const Text('Choose your language / Izaberi jezik / Zgjidh gjuhën',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 15, color: Colors.black54)),
+                const SizedBox(height: 28),
+                for (final l in const [
+                  ('en', 'English'),
+                  ('sr', 'Srpski'),
+                  ('sq', 'Shqip')
+                ])
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 24),
+                    child: FilledButton(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: kInk,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                      ),
+                      onPressed: () => setState(() {
+                        Prefs.lang = l.$1;
+                        Prefs.langChosen = true;
+                      }),
+                      child: Text(l.$2, style: const TextStyle(fontSize: 18)),
+                    ),
+                  ),
+              ],
             ),
           ),
         ),

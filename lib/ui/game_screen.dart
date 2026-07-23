@@ -4,6 +4,7 @@ import '../game/ai.dart';
 import '../game/board.dart';
 import '../game/engine.dart';
 import '../l10n/strings.dart';
+import '../main.dart' show setGameOrientation, setMenuOrientation;
 import 'board_widget.dart';
 
 class GameScreen extends StatefulWidget {
@@ -33,7 +34,14 @@ class _GameScreenState extends State<GameScreen> {
     super.initState();
     game = Game(widget.board);
     ai = Ai(widget.aiLevel, Random());
+    setGameOrientation(); // igra: landscape default (ili portrait iz podesavanja)
     _maybePhoneMove();
+  }
+
+  @override
+  void dispose() {
+    setMenuOrientation(); // povratak u meni: uvek portrait
+    super.dispose();
   }
 
   bool get phoneTurn =>

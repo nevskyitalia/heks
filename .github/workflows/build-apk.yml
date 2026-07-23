@@ -1,0 +1,37 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Preuzmi kod
+        uses: actions/checkout@v4
+
+      - name: Instaliraj Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Generisi Android platformu
+        run: flutter create . --org rs.heks --project-name heks --platforms android
+
+      - name: Zavisnosti
+        run: flutter pub get
+
+      - name: Testovi (engine + AI)
+        run: flutter test
+
+      - name: Build release APK
+        run: flutter build apk --release
+
+      - name: Otpremi APK kao artefakt
+        uses: actions/upload-artifact@v4
+        with:
+          name: heks-apk
+          path: build/app/outputs/flutter-apk/app-release.apk

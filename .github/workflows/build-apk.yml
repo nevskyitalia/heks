@@ -24,7 +24,9 @@ jobs:
           cache: true
 
       - name: Generisi Android platformu
-        run: flutter create . --org rs.heks --project-name heks --platforms android
+        run: |
+          flutter create . --org rs.heks --project-name heks --platforms android
+          rm -f test/widget_test.dart  # Flutterov sablon-test (trazi MyApp), nije nas
 
       - name: Zavisnosti
         run: flutter pub get

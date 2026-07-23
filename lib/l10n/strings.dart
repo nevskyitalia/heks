@@ -36,6 +36,7 @@ const Map<String, Map<String, String>> _s = {
     'levelHint1': 'easiest',
     'levelHint10': 'hardest',
     'continueBtn': 'Continue',
+    'botVsBot': 'Bot vs Bot',
   },
   'sr': {
     'appTitle': 'HEKS',
@@ -70,6 +71,7 @@ const Map<String, Map<String, String>> _s = {
     'levelHint1': 'najlakši',
     'levelHint10': 'najteži',
     'continueBtn': 'Nastavi',
+    'botVsBot': 'Bot protiv bota',
   },
   'sq': {
     'appTitle': 'HEKS',
@@ -104,6 +106,7 @@ const Map<String, Map<String, String>> _s = {
     'levelHint1': 'më i lehti',
     'levelHint10': 'më i vështiri',
     'continueBtn': 'Vazhdo',
+    'botVsBot': 'Boti kundër botit',
   },
 };
 

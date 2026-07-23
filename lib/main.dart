@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'prefs.dart';
-import 'ui/menu_screen.dart';
+import 'ui/language_screen.dart';
 
 /// Meniji i podesavanja su uvek uspravno (portrait).
 Future<void> setMenuOrientation() async {
@@ -54,7 +54,9 @@ class HeksApp extends StatelessWidget {
             scaffoldBackgroundColor: const Color(0xFFF7F5F0),
             fontFamily: 'serif',
           ),
-          home: const MenuScreen(),
+          // ZA TESTIRANJE: jezik se bira pri svakom pokretanju.
+          // Kasnije: home = Prefs.langChosen ? const PlayScreen() : const LanguageScreen()
+          home: const LanguageScreen(),
         );
       },
     );

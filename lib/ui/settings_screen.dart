@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../game/board.dart';
 import '../l10n/strings.dart';
+import '../main.dart' show setMenuOrientation;
 import '../prefs.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -11,6 +12,12 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    setMenuOrientation(); // podesavanja su uvek uspravno
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

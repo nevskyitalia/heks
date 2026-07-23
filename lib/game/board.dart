@@ -27,11 +27,11 @@ class BoardDef {
 const double _deg = pi / 180.0;
 final double _ap = cos(30 * _deg); // apotema faktor
 
-/// HEKS1: tri sestougla (1 : 0.7 : 0.4), izduzena 1.56 x 0.7,
+/// HEKS1: tri sestougla (1 : 0.7 : 0.4), izduzena 1.56 x 0.84,
 /// 36 polja (temena + sredine stranica), 24 linije:
 /// 18 stranica (teme-sredina-teme) + 6 radijalnih kroz temena.
 BoardDef buildHeks1() {
-  const sx = 1.56, sy = 0.7;
+  const sx = 1.56, sy = 0.84;
   const scales = [1.0, 0.7, 0.4];
   final cells = <Point<double>>[];
   // raspored: za h u 0..2 -> 6 temena (V), pa 6 sredina (M)
@@ -64,17 +64,18 @@ BoardDef buildHeks1() {
 /// 12 stranica + 6 radijusa kroz temena + 6 radijusa kroz sredine
 /// (svi radijusi idu do centra).
 BoardDef buildHeks2() {
+  const sx = 1.2; // 20% sira => krupnija na ekranu
   const scales = [1.0, 0.6];
   final cells = <Point<double>>[];
   for (var h = 0; h < 2; h++) {
     final s = scales[h];
     for (var k = 0; k < 6; k++) {
       final a = 60.0 * k * _deg;
-      cells.add(Point(s * cos(a), s * sin(a)));
+      cells.add(Point(s * cos(a) * sx, s * sin(a)));
     }
     for (var k = 0; k < 6; k++) {
       final a = (60.0 * k + 30.0) * _deg;
-      cells.add(Point(s * _ap * cos(a), s * _ap * sin(a)));
+      cells.add(Point(s * _ap * cos(a) * sx, s * _ap * sin(a)));
     }
   }
   final center = cells.length;
@@ -91,7 +92,7 @@ BoardDef buildHeks2() {
     lines.add([v(0, k), v(1, k), center]); // radijus kroz temena
     lines.add([m(0, k), m(1, k), center]); // radijus kroz sredine
   }
-  return BoardDef(id: 'heks2', cells: cells, lines: lines, cellR: 0.0975);
+  return BoardDef(id: 'heks2', cells: cells, lines: lines, cellR: 0.117);
 }
 
 final List<BoardDef> allBoards = [buildHeks1(), buildHeks2()];
